@@ -20,6 +20,7 @@ module FlowDice
       when :const  then node[:value]
       when :binary then eval_binary(node, rng, dice)
       when :dice   then eval_dice(node, rng, dice)
+      when :crit   then eval_crit(node, rng, dice)
       else raise ArgumentError, "unknown node type: #{node[:type].inspect}"
       end
     end
@@ -52,6 +53,23 @@ module FlowDice
 
     def roll_one(faces, rng)
       faces.is_a?(Array) ? faces[rng.int(0, faces.length - 1)] : rng.int(1, faces)
+    end
+
+    def eval_crit(node, rng, dice)
+      child = node[:child]
+      case node[:mode]
+      when :normal
+        eval_dice(child.merge(count: child[:count] * 2), rng, dice)
+      when :perkins
+        max_set = child[:count] * max_face(child[:faces])
+        max_set + eval_dice(child, rng, dice)
+      else
+        raise ArgumentError, "unknown crit mode: #{node[:mode].inspect}"
+      end
+    end
+
+    def max_face(faces)
+      faces.is_a?(Array) ? faces.max : faces
     end
 
     def build_breakdown(dice, total)

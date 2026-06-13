@@ -71,6 +71,31 @@ RSpec.describe FlowDice::Evaluator do
     expect(result.dice.select { |d| d[:kept] }.map { |d| d[:value] }).to contain_exactly(6, 4, 3)
     expect(result.dice.reject { |d| d[:kept] }.map { |d| d[:value] }).to eq([1])
   end
+
+  it "doubles the dice on a normal crit" do
+    plan = FlowDice::Plan.crit(:normal,
+      FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 2, label: "d6"))
+    result = evaluate(plan, "2d6c", [3, 5, 2, 6]) # rolls 4d6
+    expect(result.total).to eq(16)
+    expect(result.dice.length).to eq(4)
+  end
+
+  it "maxes one set and rolls again on a Perkins crit" do
+    plan = FlowDice::Plan.crit(:perkins,
+      FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 2, label: "d6"))
+    result = evaluate(plan, "2d6C", [3, 4]) # 12 (max of 2d6) + (3+4)
+    expect(result.total).to eq(19)
+    expect(result.dice.map { |d| d[:value] }).to eq([3, 4])
+  end
+
+  it "keeps the flat modifier outside a Perkins crit" do
+    plan = FlowDice::Plan.binary(:+,
+      FlowDice::Plan.crit(:perkins,
+        FlowDice::Plan.dice(die_kind: :standard, faces: 12, count: 1, label: "d12")),
+      FlowDice::Plan.const(5))
+    # 12 (max d12) + 7 (rolled) + 5
+    expect(evaluate(plan, "d12C+5", [7]).total).to eq(24)
+  end
 end
 
 RSpec::Matchers.define :be_present_string do
