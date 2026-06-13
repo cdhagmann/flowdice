@@ -154,6 +154,17 @@ RSpec.describe FlowDice::Evaluator do
     # tens 70, 40 ; units 3 ; keep high tens -> 70 ; 73
     expect(evaluate(plan, "2d%kh", [7, 4, 3]).total).to eq(73)
   end
+
+  it "doubles the pool before applying keep on a normal crit with a keep clause" do
+    plan = FlowDice::Plan.crit(:normal,
+      FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 2, label: "d6",
+                          keep: { mode: :high, n: 1 }))
+    # normal crit doubles count 2 -> 4, then keep highest 1 of the 4 rolls
+    result = evaluate(plan, "2d6khc", [3, 5, 2, 6])
+    expect(result.total).to eq(6)
+    expect(result.dice.length).to eq(4)
+    expect(result.dice.select { |d| d[:kept] }.map { |d| d[:value] }).to eq([6])
+  end
 end
 
 RSpec::Matchers.define :be_present_string do

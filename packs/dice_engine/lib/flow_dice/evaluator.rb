@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 module FlowDice
-  ParseResult = Struct.new(:notation, :plan, :explanation) unless defined?(ParseResult)
-  Result = Struct.new(:kind, :total, :notation, :dice, :breakdown) unless defined?(Result)
-
   # Walks a plan tree against an injected RNG. Plain Opal-safe Ruby — this file
   # is compiled to JS via Opal in increment #3.
   module Evaluator
     module_function
 
-    def evaluate(parsed, rng: SecureRandomRng.new)
+    def evaluate(parsed, rng:)
       dice = []
       total = eval_node(parsed.plan, rng, dice)
       Result.new(:sum, total, parsed.notation, dice, build_breakdown(dice, total))
