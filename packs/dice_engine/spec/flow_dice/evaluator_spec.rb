@@ -45,6 +45,32 @@ RSpec.describe FlowDice::Evaluator do
     plan = FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 2, label: "d6")
     expect(evaluate(plan, "2d6", [4, 2]).breakdown).to be_a(String).and be_present_string
   end
+
+  it "keeps the highest die (advantage)" do
+    plan = FlowDice::Plan.dice(die_kind: :standard, faces: 20, count: 2, label: "d20",
+                               keep: { mode: :high, n: 1 })
+    result = evaluate(plan, "2d20kh", [18, 7])
+    expect(result.total).to eq(18)
+    expect(result.dice).to eq([
+      { die: "d20", value: 18, kept: true },
+      { die: "d20", value: 7, kept: false }
+    ])
+  end
+
+  it "keeps the lowest die (disadvantage)" do
+    plan = FlowDice::Plan.dice(die_kind: :standard, faces: 20, count: 2, label: "d20",
+                               keep: { mode: :low, n: 1 })
+    expect(evaluate(plan, "2d20kl", [18, 7]).total).to eq(7)
+  end
+
+  it "keeps the highest 3 of 4 (ability scores)" do
+    plan = FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 4, label: "d6",
+                               keep: { mode: :high, n: 3 })
+    result = evaluate(plan, "4d6kh3", [6, 1, 4, 3])
+    expect(result.total).to eq(13)
+    expect(result.dice.select { |d| d[:kept] }.map { |d| d[:value] }).to contain_exactly(6, 4, 3)
+    expect(result.dice.reject { |d| d[:kept] }.map { |d| d[:value] }).to eq([1])
+  end
 end
 
 RSpec::Matchers.define :be_present_string do

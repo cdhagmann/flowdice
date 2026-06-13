@@ -32,8 +32,22 @@ module FlowDice
 
     def eval_dice(node, rng, dice)
       rolls = Array.new(node[:count]) { roll_one(node[:faces], rng) }
-      rolls.each { |v| dice << { die: node[:label], value: v, kept: true } }
-      rolls.sum
+      kept = keep_flags(rolls, node[:keep])
+      total = 0
+      rolls.each_with_index do |v, i|
+        dice << { die: node[:label], value: v, kept: kept[i] }
+        total += v if kept[i]
+      end
+      total
+    end
+
+    # Returns an array of booleans (one per roll) marking which dice are kept.
+    def keep_flags(rolls, keep)
+      return Array.new(rolls.length, true) if keep.nil?
+
+      order = (0...rolls.length).sort_by { |i| rolls[i] } # ascending by value
+      selected = keep[:mode] == :high ? order.last(keep[:n]) : order.first(keep[:n])
+      Array.new(rolls.length) { |i| selected.include?(i) }
     end
 
     def roll_one(faces, rng)
