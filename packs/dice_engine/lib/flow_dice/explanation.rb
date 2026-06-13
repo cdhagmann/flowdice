@@ -14,7 +14,7 @@ module FlowDice
       case node[:type]
       when :const  then node[:value].to_s
       when :binary then render_binary(node)
-      when :crit   then "#{render(node[:child])} (#{node[:mode] == :perkins ? 'Perkins' : 'normal'} crit)"
+      when :crit   then "#{render(node[:child])} (#{crit_word(node[:mode])} crit)"
       when :dice   then render_dice(node)
       else raise ArgumentError, "unknown node type: #{node[:type].inspect}"
       end
@@ -23,12 +23,27 @@ module FlowDice
     def render_binary(node)
       left = render(node[:left])
       right = node[:right]
+      word = binary_word(node[:op], right[:type] == :const)
       if right[:type] == :const
-        verb = node[:op] == :+ ? "add" : "subtract"
-        "#{left}, #{verb} #{right[:value]}"
+        "#{left}, #{word} #{right[:value]}"
       else
-        conj = node[:op] == :+ ? "plus" : "minus"
-        "#{left}, #{conj} #{render(right)}"
+        "#{left}, #{word} #{render(right).sub(/\Aroll /, '')}"
+      end
+    end
+
+    def binary_word(op, const_rhs)
+      case op
+      when :+ then const_rhs ? "add" : "plus"
+      when :- then const_rhs ? "subtract" : "minus"
+      else raise ArgumentError, "unknown binary op: #{op.inspect}"
+      end
+    end
+
+    def crit_word(mode)
+      case mode
+      when :normal  then "normal"
+      when :perkins then "Perkins"
+      else raise ArgumentError, "unknown crit mode: #{mode.inspect}"
       end
     end
 

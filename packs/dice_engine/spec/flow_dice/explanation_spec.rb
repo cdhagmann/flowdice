@@ -34,4 +34,22 @@ RSpec.describe FlowDice::Explanation do
   it "explains subtraction" do
     expect(explain("d20-2")).to eq("Roll d20, subtract 2")
   end
+
+  it "explains adding a second dice term without a doubled 'roll'" do
+    expect(explain("2d6+1d4")).to eq("Roll 2d6, plus d4")
+  end
+
+  it "explains subtracting a second dice term" do
+    expect(explain("2d6-1d4")).to eq("Roll 2d6, minus d4")
+  end
+
+  it "raises on an unknown binary op" do
+    bad = { type: :binary, op: :*, left: FlowDice::Plan.const(1), right: FlowDice::Plan.const(2) }
+    expect { FlowDice::Explanation.generate(bad) }.to raise_error(ArgumentError)
+  end
+
+  it "raises on an unknown crit mode" do
+    bad = { type: :crit, mode: :wild, child: FlowDice::Plan.dice(die_kind: :standard, faces: 6, count: 1, label: "d6") }
+    expect { FlowDice::Explanation.generate(bad) }.to raise_error(ArgumentError)
+  end
 end
