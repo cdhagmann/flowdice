@@ -38,4 +38,34 @@ RSpec.describe FlowDice::Parser do
       right: { type: :const, value: 2 }
     )
   end
+
+  it "parses keep-highest with an implied 1" do
+    expect(parse("2d20kh")[:keep]).to eq(mode: :high, n: 1)
+  end
+
+  it "parses keep-lowest with an explicit count" do
+    expect(parse("4d6kl3")[:keep]).to eq(mode: :low, n: 3)
+  end
+
+  it "wraps a dice node in a normal crit" do
+    expect(parse("2d6c")).to eq(
+      type: :crit, mode: :normal,
+      child: { type: :dice, die_kind: :standard, faces: 6, count: 2, keep: nil, label: "d6" }
+    )
+  end
+
+  it "wraps a dice node in a Perkins crit" do
+    expect(parse("d8C")[:mode]).to eq(:perkins)
+  end
+
+  it "keeps the flat modifier outside the crit" do
+    expect(parse("d12c+5")).to eq(
+      type: :binary, op: :+,
+      left: {
+        type: :crit, mode: :normal,
+        child: { type: :dice, die_kind: :standard, faces: 12, count: 1, keep: nil, label: "d12" }
+      },
+      right: { type: :const, value: 5 }
+    )
+  end
 end

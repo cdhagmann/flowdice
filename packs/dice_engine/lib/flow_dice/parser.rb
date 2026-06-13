@@ -45,7 +45,29 @@ module FlowDice
     end
 
     def dice_expr(count)
-      die_type(count)
+      die = die_type(count)
+      die = apply_keep(die)
+      apply_crit(die)
+    end
+
+    def apply_keep(die)
+      if @ss.scan(/kh/)
+        die.merge(keep: { mode: :high, n: (@ss.scan(/\d+/) || "1").to_i })
+      elsif @ss.scan(/kl/)
+        die.merge(keep: { mode: :low, n: (@ss.scan(/\d+/) || "1").to_i })
+      else
+        die
+      end
+    end
+
+    def apply_crit(die)
+      if @ss.scan(/c/)
+        Plan.crit(:normal, die)
+      elsif @ss.scan(/C/)
+        Plan.crit(:perkins, die)
+      else
+        die
+      end
     end
 
     def die_type(count)
