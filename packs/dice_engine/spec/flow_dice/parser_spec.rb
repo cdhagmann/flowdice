@@ -68,4 +68,43 @@ RSpec.describe FlowDice::Parser do
       right: { type: :const, value: 5 }
     )
   end
+
+  it "parses an explicit custom face set" do
+    expect(parse("d{1,3,5,7}")).to eq(
+      type: :dice, die_kind: :custom, faces: [1, 3, 5, 7], count: 1, keep: nil, label: "d{1,3,5,7}"
+    )
+  end
+
+  it "parses a custom face set with negatives" do
+    expect(parse("d{-1,0,1}")[:faces]).to eq([-1, 0, 1])
+  end
+
+  it "normalizes a range to explicit faces" do
+    expect(parse("d[0..5]")).to eq(
+      type: :dice, die_kind: :custom, faces: [0, 1, 2, 3, 4, 5], count: 1, keep: nil, label: "d[0..5]"
+    )
+  end
+
+  it "parses percentile as a distinct die kind" do
+    expect(parse("d%")).to eq(
+      type: :dice, die_kind: :percentile, faces: 100, count: 1, keep: nil, label: "d%"
+    )
+  end
+
+  it "parses d100 as a flat standard die" do
+    expect(parse("d100")).to eq(
+      type: :dice, die_kind: :standard, faces: 100, count: 1, keep: nil, label: "d100"
+    )
+  end
+
+  it "parses a percentile bonus die (keep applies to the pair)" do
+    expect(parse("2d%kl")).to eq(
+      type: :dice, die_kind: :percentile, faces: 100, count: 2,
+      keep: { mode: :low, n: 1 }, label: "d%"
+    )
+  end
+
+  it "rejects a zero-face standard die" do
+    expect { parse("d0") }.to raise_error(FlowDice::ParseError)
+  end
 end

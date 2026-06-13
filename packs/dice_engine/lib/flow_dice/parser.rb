@@ -73,11 +73,45 @@ module FlowDice
     def die_type(count)
       @ss.scan(/d/) || raise(ParseError, "expected 'd'")
 
-      if (n = @ss.scan(/\d+/))
-        Plan.dice(die_kind: :standard, faces: n.to_i, count: count, label: "d#{n}")
+      if @ss.scan(/%/)
+        Plan.dice(die_kind: :percentile, faces: 100, count: count, label: "d%")
+      elsif @ss.scan(/\{/)
+        faces = face_set
+        Plan.dice(die_kind: :custom, faces: faces, count: count, label: "d{#{faces.join(',')}}")
+      elsif @ss.scan(/\[/)
+        lo, hi = face_range
+        Plan.dice(die_kind: :custom, faces: (lo..hi).to_a, count: count, label: "d[#{lo}..#{hi}]")
+      elsif (n = @ss.scan(/\d+/))
+        faces = n.to_i
+        raise ParseError, "die must have at least 1 face" if faces < 1
+
+        Plan.dice(die_kind: :standard, faces: faces, count: count, label: "d#{n}")
       else
         raise ParseError, "invalid die type at #{@ss.rest.inspect}"
       end
+    end
+
+    def face_set
+      values = []
+      loop do
+        v = @ss.scan(/-?\d+/) || raise(ParseError, "expected a face value at #{@ss.rest.inspect}")
+        values << v.to_i
+        break unless @ss.scan(/,/)
+      end
+      @ss.scan(/\}/) || raise(ParseError, "expected '}' at #{@ss.rest.inspect}")
+      values
+    end
+
+    def face_range
+      lo = @ss.scan(/-?\d+/) || raise(ParseError, "expected range start at #{@ss.rest.inspect}")
+      @ss.scan(/\.\./) || raise(ParseError, "expected '..' at #{@ss.rest.inspect}")
+      hi = @ss.scan(/-?\d+/) || raise(ParseError, "expected range end at #{@ss.rest.inspect}")
+      @ss.scan(/\]/) || raise(ParseError, "expected ']' at #{@ss.rest.inspect}")
+      lo = lo.to_i
+      hi = hi.to_i
+      raise ParseError, "range start #{lo} > end #{hi}" if lo > hi
+
+      [lo, hi]
     end
   end
 end
