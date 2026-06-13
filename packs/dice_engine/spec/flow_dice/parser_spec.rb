@@ -107,4 +107,32 @@ RSpec.describe FlowDice::Parser do
   it "rejects a zero-face standard die" do
     expect { parse("d0") }.to raise_error(FlowDice::ParseError)
   end
+
+  it "ignores surrounding and internal whitespace" do
+    expect(parse("  2d6 + 3 ")).to eq(parse("2d6+3"))
+  end
+
+  it "raises on empty notation" do
+    expect { parse("") }.to raise_error(FlowDice::ParseError, /empty/)
+  end
+
+  it "raises on trailing garbage" do
+    expect { parse("2d6 xyz") }.to raise_error(FlowDice::ParseError, /unexpected/)
+  end
+
+  it "raises on a bare 'd' with no die type" do
+    expect { parse("d") }.to raise_error(FlowDice::ParseError)
+  end
+
+  it "raises on an unterminated face set" do
+    expect { parse("d{1,2") }.to raise_error(FlowDice::ParseError)
+  end
+
+  it "raises on an inverted range" do
+    expect { parse("d[5..0]") }.to raise_error(FlowDice::ParseError, /start/)
+  end
+
+  it "raises on an excessively large range" do
+    expect { parse("d[0..100000]") }.to raise_error(FlowDice::ParseError, /large/)
+  end
 end

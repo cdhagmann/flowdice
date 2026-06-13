@@ -6,6 +6,8 @@ module FlowDice
   # Recursive-descent parser: notation String -> plan tree (Plan nodes).
   # Server-side only (uses StringScanner); never compiled to Opal.
   class Parser
+    MAX_RANGE_FACES = 10_000
+
     def self.parse(notation)
       new(notation).parse
     end
@@ -110,6 +112,10 @@ module FlowDice
       lo = lo.to_i
       hi = hi.to_i
       raise ParseError, "range start #{lo} > end #{hi}" if lo > hi
+
+      if (hi - lo + 1) > MAX_RANGE_FACES
+        raise ParseError, "range too large (max #{MAX_RANGE_FACES} faces)"
+      end
 
       [lo, hi]
     end
