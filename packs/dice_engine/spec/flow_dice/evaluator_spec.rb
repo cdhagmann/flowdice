@@ -96,6 +96,29 @@ RSpec.describe FlowDice::Evaluator do
     # 12 (max d12) + 7 (rolled) + 5
     expect(evaluate(plan, "d12C+5", [7]).total).to eq(24)
   end
+
+  it "rolls an explicit custom face set by index" do
+    plan = FlowDice::Plan.dice(die_kind: :custom, faces: [1, 3, 5, 7], count: 1, label: "d{1,3,5,7}")
+    # index 2 -> face 5
+    result = evaluate(plan, "d{1,3,5,7}", [2])
+    expect(result.total).to eq(5)
+    expect(result.dice).to eq([{ die: "d{1,3,5,7}", value: 5, kept: true }])
+  end
+
+  it "rolls the Custom Skill System base die (4d[0..5])" do
+    plan = FlowDice::Plan.dice(die_kind: :custom, faces: (0..5).to_a, count: 4, label: "d[0..5]")
+    # indices 5,0,3,2 -> faces 5,0,3,2
+    expect(evaluate(plan, "4d[0..5]", [5, 0, 3, 2]).total).to eq(10)
+  end
+
+  it "applies keep to a custom-face skill roll (6d[0..5]kh4)" do
+    plan = FlowDice::Plan.dice(die_kind: :custom, faces: (0..5).to_a, count: 6, label: "d[0..5]",
+                               keep: { mode: :high, n: 4 })
+    # indices -> faces 5,4,1,0,3,2 ; keep highest 4 -> 5+4+3+2 = 14
+    result = evaluate(plan, "6d[0..5]kh4", [5, 4, 1, 0, 3, 2])
+    expect(result.total).to eq(14)
+    expect(result.dice.reject { |d| d[:kept] }.map { |d| d[:value] }).to contain_exactly(1, 0)
+  end
 end
 
 RSpec::Matchers.define :be_present_string do
