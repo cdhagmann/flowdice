@@ -119,6 +119,41 @@ RSpec.describe FlowDice::Evaluator do
     expect(result.total).to eq(14)
     expect(result.dice.reject { |d| d[:kept] }.map { |d| d[:value] }).to contain_exactly(1, 0)
   end
+
+  it "rolls a standard percentile pair" do
+    plan = FlowDice::Plan.dice(die_kind: :percentile, faces: 100, count: 1, label: "d%")
+    result = evaluate(plan, "d%", [7, 3]) # tens 70, units 3
+    expect(result.total).to eq(73)
+    expect(result.dice).to eq([
+      { die: "d%(tens)", value: 70, kept: true },
+      { die: "d%(units)", value: 3, kept: true }
+    ])
+  end
+
+  it "applies the 00+0 = 100 rule" do
+    plan = FlowDice::Plan.dice(die_kind: :percentile, faces: 100, count: 1, label: "d%")
+    expect(evaluate(plan, "d%", [0, 0]).total).to eq(100)
+  end
+
+  it "keeps the lowest tens on a CoC bonus die (2d%kl)" do
+    plan = FlowDice::Plan.dice(die_kind: :percentile, faces: 100, count: 2, label: "d%",
+                               keep: { mode: :low, n: 1 })
+    # tens 70, 40 ; units 3 ; keep low tens -> 40 ; 40 + 3 = 43
+    result = evaluate(plan, "2d%kl", [7, 4, 3])
+    expect(result.total).to eq(43)
+    expect(result.dice).to eq([
+      { die: "d%(tens)", value: 70, kept: false },
+      { die: "d%(tens)", value: 40, kept: true },
+      { die: "d%(units)", value: 3, kept: true }
+    ])
+  end
+
+  it "keeps the highest tens on a CoC penalty die (2d%kh)" do
+    plan = FlowDice::Plan.dice(die_kind: :percentile, faces: 100, count: 2, label: "d%",
+                               keep: { mode: :high, n: 1 })
+    # tens 70, 40 ; units 3 ; keep high tens -> 70 ; 73
+    expect(evaluate(plan, "2d%kh", [7, 4, 3]).total).to eq(73)
+  end
 end
 
 RSpec::Matchers.define :be_present_string do

@@ -32,6 +32,8 @@ module FlowDice
     end
 
     def eval_dice(node, rng, dice)
+      return eval_percentile(node, rng, dice) if node[:die_kind] == :percentile
+
       rolls = Array.new(node[:count]) { roll_one(node[:faces], rng) }
       kept = keep_flags(rolls, node[:keep])
       total = 0
@@ -40,6 +42,22 @@ module FlowDice
         total += v if kept[i]
       end
       total
+    end
+
+    def eval_percentile(node, rng, dice)
+      tens = Array.new(node[:count]) { rng.int(0, 9) * 10 }
+      units = rng.int(0, 9)
+      keep = node[:keep] || { mode: :high, n: 1 } # count == 1 selects the only tens
+      order = (0...tens.length).sort_by { |i| tens[i] }
+      kept_index = keep[:mode] == :high ? order.last : order.first
+
+      tens.each_with_index do |t, i|
+        dice << { die: "d%(tens)", value: t, kept: i == kept_index }
+      end
+      dice << { die: "d%(units)", value: units, kept: true }
+
+      value = tens[kept_index] + units
+      value.zero? ? 100 : value
     end
 
     # Returns an array of booleans (one per roll) marking which dice are kept.
