@@ -2,3 +2,4 @@
 
 require_relative "flow_dice/version"
 require_relative "flow_dice/rng"
+require_relative "flow_dice/plan"
