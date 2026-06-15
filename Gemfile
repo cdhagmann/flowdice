@@ -46,6 +46,9 @@ group :development, :test do
 
   gem "rspec-rails", "~> 7.1"
 
+  gem "opal", "~> 1.8"
+  gem "mini_racer", "~> 0.18"
+
   # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
   gem "bundler-audit", require: false
 
