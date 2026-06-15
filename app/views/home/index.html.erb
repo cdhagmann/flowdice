@@ -5,13 +5,13 @@
     <div class="fd-tag">no dice? use flowdice</div>
   </div>
   <div class="fd-tabs">
-    <div class="fd-tab on">Dice</div>
-    <div class="fd-tab" aria-disabled="true">Favorites</div>
-    <div class="fd-tab" aria-disabled="true">History</div>
+    <button type="button" class="fd-tab on" aria-current="page">Dice</button>
+    <button type="button" class="fd-tab" disabled>Favorites</button>
+    <button type="button" class="fd-tab" disabled>History</button>
   </div>
   <div class="fd-readout">
     <button class="fd-clr" data-action="calculator#clear" aria-label="Clear">×</button>
-    <div class="fd-note" data-calculator-target="notation">—</div>
+    <div class="fd-note" data-calculator-target="notation" aria-live="polite">—</div>
   </div>
   <div class="fd-dice">
     <% [["d4","#ff5d5d"],["d6","#ff8a3d"],["d8","#f5b833"],["d10","#b6e34d"],["d12","#34d39b"],["d20","#38bdf8"],["d100","#8b9bff"],["d%","#f472d0"],["dN","#8a90a6"]].each do |name, color| %>

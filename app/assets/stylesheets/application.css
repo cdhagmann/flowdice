@@ -1,3 +1,7 @@
+/* Global app theme (FlowDice is a dark, single-purpose app). */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#0b0c10}
+
 /*
  * This is a manifest file that'll be compiled into application.css.
  *
