@@ -1,4 +1,11 @@
 import { Controller } from "@hotwired/stimulus";
+import { rollNotation } from "roll_pipeline";
+
+const DIE_COLORS = { d4:"#ff5d5d", d6:"#ff8a3d", d8:"#f5b833", d10:"#b6e34d", d12:"#34d39b", d20:"#38bdf8", d100:"#8b9bff" };
+function dieColor(die) {
+  if (die && die.startsWith("d%")) return "#f472d0";
+  return DIE_COLORS[die] || "#8a90a6";
+}
 
 // Builds dice notation from taps. State: one "current die term" + a flat modifier.
 // (Multi-term chaining and text entry are later increments; the server parser is
@@ -42,7 +49,39 @@ export default class extends Controller {
     return s;
   }
 
-  roll() { /* wired in Task 6 */ }
+  async roll() {
+    const n = this.buildNotation();
+    if (!n || this.rolling) return;
+    this.rolling = true;
+    this.rollTarget.disabled = true;
+    try {
+      const { result } = await rollNotation(n);
+      this.renderSheet(result);
+    } catch (err) {
+      this.notationTarget.textContent = err.message;
+    } finally {
+      this.rolling = false;
+      this.rollTarget.disabled = false;
+    }
+  }
+
+  renderSheet(result) {
+    const chips = result.dice.map((d) =>
+      `<div class="fd-chip ${d.kept ? "" : "drop"}" style="--c: ${dieColor(d.die)}">${d.value}</div>`
+    ).join("");
+    this.sheetInnerTarget.innerHTML =
+      `<div class="fd-rolled">${result.notation}</div>` +
+      `<div class="fd-total">${result.total}</div>` +
+      `<div class="fd-chips">${chips}</div>` +
+      `<div class="fd-brk">${result.breakdown}</div>` +
+      `<div class="fd-sheet-act">` +
+        `<button class="fd-again" data-action="calculator#roll">Roll again</button>` +
+        `<button class="fd-ico" data-action="calculator#closeSheet">×</button>` +
+      `</div>`;
+    this.sheetTarget.hidden = false;
+  }
+
+  closeSheet() { this.sheetTarget.hidden = true; }
 
   render() {
     const n = this.buildNotation();

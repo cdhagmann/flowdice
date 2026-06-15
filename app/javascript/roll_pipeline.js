@@ -49,8 +49,12 @@ async function parse(notation) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ notation }),
   });
+  if (!resp.ok) {
+    let msg = "parse failed";
+    try { msg = (await resp.json()).error || msg; } catch (_) {}
+    throw new Error(msg);
+  }
   const body = await resp.json();
-  if (!resp.ok) throw new Error(body.error || "parse failed");
   return { plan: body.plan, explanation: body.explanation };
 }
 
