@@ -18,13 +18,13 @@ RSpec.describe "POST /parse", type: :request do
   it "returns 422 with an error for invalid notation" do
     post "/parse", params: { notation: "d" }
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(JSON.parse(response.body)["error"]).to be_a(String)
   end
 
   it "returns 422 when notation is missing" do
     post "/parse", params: {}
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
   end
 end

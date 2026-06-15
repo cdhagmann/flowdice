@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class ParseController < ApplicationController
-  # Stateless JSON API; no CSRF token (no session/mutation).
-  skip_forgery_protection
-
+# Stateless JSON API: parses dice notation into a plan + explanation.
+# Inherits ActionController::API (no CSRF / no browser gate / no view layer).
+class ParseController < ActionController::API
   def create
     parsed = FlowDice::Engine.parse(params.require(:notation))
     render json: {
@@ -12,6 +11,6 @@ class ParseController < ApplicationController
       explanation: parsed.explanation
     }
   rescue FlowDice::ParseError, ActionController::ParameterMissing => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    render json: { error: e.message }, status: :unprocessable_content
   end
 end
