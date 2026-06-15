@@ -6,12 +6,15 @@ function dieColor(die) {
   if (die && die.startsWith("d%")) return "#f472d0";
   return DIE_COLORS[die] || "#8a90a6";
 }
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
 // Builds dice notation from taps. State: one "current die term" + a flat modifier.
 // (Multi-term chaining and text entry are later increments; the server parser is
 // the validator — a bad build surfaces as a 422 at roll time.)
 export default class extends Controller {
-  static targets = ["notation", "modifier", "roll", "sheet", "sheetInner"];
+  static targets = ["notation", "modifier", "roll", "sheet", "sheetInner", "error"];
 
   connect() {
     this.die = null;     // e.g. "d20"
@@ -58,7 +61,7 @@ export default class extends Controller {
       const { result } = await rollNotation(n);
       this.renderSheet(result);
     } catch (err) {
-      this.notationTarget.textContent = err.message;
+      this.errorTarget.textContent = err.message;
     } finally {
       this.rolling = false;
       this.rollTarget.disabled = false;
@@ -70,13 +73,13 @@ export default class extends Controller {
       `<div class="fd-chip ${d.kept ? "" : "drop"}" style="--c: ${dieColor(d.die)}">${d.value}</div>`
     ).join("");
     this.sheetInnerTarget.innerHTML =
-      `<div class="fd-rolled">${result.notation}</div>` +
+      `<div class="fd-rolled">${esc(result.notation)}</div>` +
       `<div class="fd-total">${result.total}</div>` +
       `<div class="fd-chips">${chips}</div>` +
-      `<div class="fd-brk">${result.breakdown}</div>` +
+      `<div class="fd-brk">${esc(result.breakdown)}</div>` +
       `<div class="fd-sheet-act">` +
         `<button class="fd-again" data-action="calculator#roll">Roll again</button>` +
-        `<button class="fd-ico" data-action="calculator#closeSheet">×</button>` +
+        `<button class="fd-ico" data-action="calculator#closeSheet" aria-label="Close">×</button>` +
       `</div>`;
     this.sheetTarget.hidden = false;
   }
@@ -92,5 +95,6 @@ export default class extends Controller {
       const m = b.dataset.mod;
       b.classList.toggle("on", m === this.keep || m === this.crit);
     });
+    this.errorTarget.textContent = "";
   }
 }

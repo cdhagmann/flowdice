@@ -12,6 +12,7 @@
   <div class="fd-readout">
     <button class="fd-clr" data-action="calculator#clear" aria-label="Clear">×</button>
     <div class="fd-note" data-calculator-target="notation" aria-live="polite">—</div>
+    <div class="fd-err" data-calculator-target="error" role="alert"></div>
   </div>
   <div class="fd-dice">
     <% [["d4","#ff5d5d"],["d6","#ff8a3d"],["d8","#f5b833"],["d10","#b6e34d"],["d12","#34d39b"],["d20","#38bdf8"],["d100","#8b9bff"],["d%","#f472d0"],["dN","#8a90a6"]].each do |name, color| %>
@@ -39,7 +40,7 @@
     <button class="fd-roll" data-action="calculator#roll" data-calculator-target="roll">ROLL</button>
     <button class="fd-fav" aria-disabled="true" aria-label="Save favorite (coming soon)">♥</button>
   </div>
-  <div class="fd-sheet" data-calculator-target="sheet" hidden>
+  <div class="fd-sheet" data-calculator-target="sheet" role="dialog" aria-modal="true" aria-label="Roll result" hidden>
     <div class="fd-sheet-inner" data-calculator-target="sheetInner"></div>
   </div>
 </div>
