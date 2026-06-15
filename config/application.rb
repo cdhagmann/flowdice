@@ -40,6 +40,10 @@ module RailsSkeleton
     config.autoload_paths << root.join("packs/dice_engine/lib")
     config.eager_load_paths << root.join("packs/dice_engine/lib")
 
+    # flow_dice/opal/ is Opal-only source (JS interop via backticks), compiled by
+    # Opal and never loaded under MRI. Keep Zeitwerk away from it.
+    Rails.autoloaders.main.ignore(root.join("packs/dice_engine/lib/flow_dice/opal"))
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
