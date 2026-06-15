@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "opal"
+require_relative "../../lib/flow_dice_opal"
 require "mini_racer"
 
 # Compiles the Opal evaluator entry once and runs rolls through it in V8.
@@ -8,13 +8,7 @@ module OpalEvaluatorHarness
   module_function
 
   def compiled_js
-    @compiled_js ||= begin
-      Opal.append_path(Rails.root.join("packs/dice_engine/lib").to_s)
-      builder = Opal::Builder.new
-      builder.build("opal")
-      builder.build("flow_dice/opal/entry")
-      builder.to_s
-    end
+    @compiled_js ||= FlowDiceOpal.build
   end
 
   def context
