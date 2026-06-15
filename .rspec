@@ -1,1 +1,5 @@
---require spec_helper
+--require rails_helper
+-I spec
+--default-path .
+--pattern {spec,packs/**/spec}/**/*_spec.rb
+--format documentation

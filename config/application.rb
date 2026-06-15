@@ -36,6 +36,10 @@ module RailsSkeleton
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # The dice engine pack is plain Ruby under packs/dice_engine/lib; let Zeitwerk manage it.
+    config.autoload_paths << root.join("packs/dice_engine/lib")
+    config.eager_load_paths << root.join("packs/dice_engine/lib")
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
