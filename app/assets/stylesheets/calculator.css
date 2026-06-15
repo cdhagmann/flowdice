@@ -1,0 +1,40 @@
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#0b0c10}
+.fd{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 16px 22px;gap:14px;background:#0b0c10;color:#e8e9f0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fd-top{display:flex;align-items:baseline;justify-content:space-between;padding-top:18px}
+.fd-brand{font-weight:800;font-size:20px;letter-spacing:-.02em;color:#fff}
+.fd-brand b{color:#8b5cff}
+.fd-tag{font-size:11px;color:#5d6175}
+.fd-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#13141b;border-radius:13px;padding:4px}
+.fd-tab{text-align:center;font-size:12.5px;font-weight:600;color:#7e8295;padding:8px 0;border-radius:10px}
+.fd-tab.on{background:#262838;color:#fff}
+.fd-tab[aria-disabled]{opacity:.5}
+.fd-readout{position:relative;background:#13141b;border:1px solid #20222c;border-radius:18px;padding:18px;min-height:74px}
+.fd-note{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:31px;font-weight:600;letter-spacing:-.01em;color:#fff;font-variant-numeric:tabular-nums;line-height:1.15;word-break:break-all}
+.fd-clr{position:absolute;top:15px;right:15px;width:30px;height:30px;border-radius:999px;background:#1d1f29;color:#9aa0b5;border:none;font-size:17px}
+.fd-dice{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fd-die{height:60px;border-radius:15px;background:#121319;border:1.5px solid var(--c);color:var(--c);font-weight:700;font-size:17px;font-family:ui-monospace,monospace}
+.fd-mods{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fd-mod{height:48px;border-radius:13px;background:#15161e;border:1px solid #262834;color:#cfd2e6;font-weight:600;font-size:14px;font-family:ui-monospace,monospace}
+.fd-mod.on{background:rgba(139,92,255,.16);border-color:#8b5cff;color:#c5b6ff}
+.fd-step{display:flex;align-items:center;justify-content:space-between;background:#13141b;border:1px solid #20222c;border-radius:14px;padding:10px 12px 10px 16px}
+.fd-step-lbl{color:#868aa0;font-size:13px;font-weight:600}
+.fd-step-ctl{display:flex;align-items:center;gap:12px}
+.fd-step-ctl button{width:42px;height:42px;border-radius:12px;background:#1f2130;border:none;color:#cdd0e6;font-size:23px;font-weight:600}
+.fd-step-ctl b{font-family:ui-monospace,monospace;font-size:20px;color:#fff;min-width:44px;text-align:center}
+.fd-action{display:flex;gap:10px;margin-top:6px}
+.fd-roll{flex:1;height:62px;border-radius:17px;background:#8b5cff;color:#fff;font-weight:800;font-size:19px;letter-spacing:.04em;border:none;box-shadow:0 8px 24px -8px rgba(139,92,255,.7)}
+.fd-roll:disabled{opacity:.4;box-shadow:none}
+.fd-fav{width:62px;height:62px;border-radius:17px;background:#15161e;border:1px solid #262834;color:#6a7a8c;font-size:22px;opacity:.5}
+.fd-sheet{position:fixed;inset:0;background:rgba(6,7,10,.66);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.fd-sheet[hidden]{display:none}
+.fd-sheet-inner{width:100%;max-width:430px;background:#15161e;border:1px solid #2a2c38;border-radius:26px 26px 0 0;padding:18px 18px 26px;box-shadow:0 -24px 70px rgba(0,0,0,.55)}
+.fd-rolled{text-align:center;color:#8b8fa3;font-family:ui-monospace,monospace;font-size:14px}
+.fd-total{text-align:center;font-weight:800;font-size:94px;line-height:1;color:#fff;letter-spacing:-.03em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.fd-chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:16px 0 4px}
+.fd-chip{min-width:50px;height:44px;padding:0 14px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#121319;border:1.5px solid var(--c,#2c2f3c);color:var(--c,#cfd2e6);font-weight:700;font-family:ui-monospace,monospace;font-size:16px}
+.fd-chip.drop{opacity:.45;text-decoration:line-through;border-color:#3a3d4a;color:#7e8295}
+.fd-brk{text-align:center;color:#7e8295;font-size:12.5px;margin-top:10px;font-family:ui-monospace,monospace}
+.fd-sheet-act{display:flex;gap:10px;margin-top:22px}
+.fd-again{flex:1;height:54px;border-radius:15px;background:#8b5cff;color:#fff;font-weight:800;font-size:16px;border:none}
+.fd-ico{width:54px;height:54px;border-radius:15px;background:#1f2130;color:#cdd0e6;border:none;font-size:22px}

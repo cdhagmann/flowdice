@@ -1,2 +1,41 @@
-<h1>FlowDice</h1>
-<p>No dice? Use FlowDice.</p>
+<% content_for :title, "FlowDice" %>
+<div class="fd" data-controller="calculator">
+  <div class="fd-top">
+    <div class="fd-brand">Flow<b>Dice</b></div>
+    <div class="fd-tag">no dice? use flowdice</div>
+  </div>
+  <div class="fd-tabs">
+    <div class="fd-tab on">Dice</div>
+    <div class="fd-tab" aria-disabled="true">Favorites</div>
+    <div class="fd-tab" aria-disabled="true">History</div>
+  </div>
+  <div class="fd-readout">
+    <button class="fd-clr" data-action="calculator#clear" aria-label="Clear">×</button>
+    <div class="fd-note" data-calculator-target="notation">—</div>
+  </div>
+  <div class="fd-dice">
+    <% [["d4","#ff5d5d"],["d6","#ff8a3d"],["d8","#f5b833"],["d10","#b6e34d"],["d12","#34d39b"],["d20","#38bdf8"],["d100","#8b9bff"],["d%","#f472d0"],["dN","#8a90a6"]].each do |name, color| %>
+      <button class="fd-die" style="--c: <%= color %>" data-action="calculator#addDie" data-die="<%= name %>"><%= name %></button>
+    <% end %>
+  </div>
+  <div class="fd-mods">
+    <% %w[kh kl c C].each do |m| %>
+      <button class="fd-mod" data-action="calculator#toggleMod" data-mod="<%= m %>"><%= m %></button>
+    <% end %>
+  </div>
+  <div class="fd-step">
+    <span class="fd-step-lbl">Modifier</span>
+    <div class="fd-step-ctl">
+      <button data-action="calculator#stepDown" aria-label="Decrease modifier">−</button>
+      <b data-calculator-target="modifier">+0</b>
+      <button data-action="calculator#stepUp" aria-label="Increase modifier">+</button>
+    </div>
+  </div>
+  <div class="fd-action">
+    <button class="fd-roll" data-action="calculator#roll" data-calculator-target="roll">ROLL</button>
+    <button class="fd-fav" aria-disabled="true" aria-label="Save favorite (coming soon)">♥</button>
+  </div>
+  <div class="fd-sheet" data-calculator-target="sheet" hidden>
+    <div class="fd-sheet-inner" data-calculator-target="sheetInner"></div>
+  </div>
+</div>
