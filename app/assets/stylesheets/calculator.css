@@ -12,6 +12,7 @@
 .fd-clr{position:absolute;top:15px;right:15px;width:30px;height:30px;border-radius:999px;background:#1d1f29;color:#9aa0b5;border:none;font-size:17px}
 .fd-dice{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fd-die{height:60px;border-radius:15px;background:#121319;border:1.5px solid var(--c,#8a90a6);color:var(--c,#8a90a6);font-weight:700;font-size:17px;font-family:ui-monospace,monospace}
+.fd-die:disabled{opacity:.4}
 .fd-mods{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .fd-mod{height:48px;border-radius:13px;background:#15161e;border:1px solid #262834;color:#cfd2e6;font-weight:600;font-size:14px;font-family:ui-monospace,monospace}
 .fd-mod.on{background:rgba(139,92,255,.16);border-color:#8b5cff;color:#c5b6ff}

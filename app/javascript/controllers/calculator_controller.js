@@ -32,7 +32,7 @@ export default class extends Controller {
   stepDown() { this.modifier -= 1; this.render(); }
   clear() { this.die = null; this.count = 1; this.keep = null; this.crit = null; this.modifier = 0; this.render(); }
 
-  notation() {
+  buildNotation() {
     if (!this.die) return "";
     let s = (this.count > 1 ? this.count : "") + this.die;
     if (this.keep) s += this.keep;
@@ -45,7 +45,7 @@ export default class extends Controller {
   roll() { /* wired in Task 6 */ }
 
   render() {
-    const n = this.notation();
+    const n = this.buildNotation();
     this.notationTarget.textContent = n || "—";
     this.modifierTarget.textContent = (this.modifier >= 0 ? "+" : "") + this.modifier;
     this.rollTarget.disabled = !n;

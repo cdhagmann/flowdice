@@ -15,7 +15,11 @@
   </div>
   <div class="fd-dice">
     <% [["d4","#ff5d5d"],["d6","#ff8a3d"],["d8","#f5b833"],["d10","#b6e34d"],["d12","#34d39b"],["d20","#38bdf8"],["d100","#8b9bff"],["d%","#f472d0"],["dN","#8a90a6"]].each do |name, color| %>
-      <button class="fd-die" style="--c: <%= color %>" data-action="calculator#addDie" data-die="<%= name %>"><%= name %></button>
+      <% if name == "dN" %>
+        <button class="fd-die" style="--c: <%= color %>" disabled aria-label="Custom die (coming soon)"><%= name %></button>
+      <% else %>
+        <button class="fd-die" style="--c: <%= color %>" data-action="calculator#addDie" data-die="<%= name %>"><%= name %></button>
+      <% end %>
     <% end %>
   </div>
   <div class="fd-mods">
