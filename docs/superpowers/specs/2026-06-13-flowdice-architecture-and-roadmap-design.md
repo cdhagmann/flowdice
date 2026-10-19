@@ -273,7 +273,9 @@ Desktop stays PWA-only — Hotwire Native targets iOS/Android only.
 6. **Favorites & Roll History** — `/favorites` and `/history` routes (distinct
    URLs for Hotwire Native readiness); IndexedDB-backed.
 7. **PWA / offline** — manifest, service worker, installable, offline re-rolls
-   verified.
+   verified. *Candidate service-worker gem:* `coldwire-rails` — see
+   `docs/superpowers/specs/2026-09-12-coldwire-rails-evaluation.md` (evaluated,
+   not adopted; pin `~> 0.3.0` and re-check maturity when scoping).
 
 ### Phase 1 — Stretch
 
@@ -321,7 +323,9 @@ the first database appears only at Phase 3 sync.
   Phase 1.
 - **Native-WebView offline strategy** — service worker vs. native-layer caching
   (WKWebView service-worker support has caveats); decided when the Phase 3
-  shells are scoped.
+  shells are scoped. The #7 candidate `coldwire-rails` targets exactly this
+  (200 fallback that boots Turbo, Turbo-Frame answers, Android UA cookie, iOS
+  app-bound domains) — see the 2026-09-12 evaluation.
 - **Path configuration JSON** (URL → native screen map) — authored in Phase 3.
 
 ## References
